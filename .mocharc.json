@@ -1,0 +1,16 @@
+{
+  "recursive": true,
+  "file:": [
+    "src/**/*.spec.ts"
+  ],
+  "extension": [
+    "ts"
+  ],
+  "watch-files": [
+    "src/**/*.ts"
+  ],
+  "require": [
+    "ts-node/register",
+    "source-map-support/register"
+  ]
+}

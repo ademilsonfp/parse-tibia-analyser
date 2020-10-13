@@ -1,0 +1,5 @@
+{
+  "mode": "library",
+  "entryPoint": "./src/index",
+  "out": "./docs"
+}
