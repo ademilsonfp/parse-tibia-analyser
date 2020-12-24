@@ -9,6 +9,10 @@ Supported contents:
 * _Hunting Session Analyser_
 * _Party Hunt Analyser_
 
+Apps commonly used by players to share those contents like [Discord] can change
+the standard tabular indentations to spaces, so the parsers also supports
+consistent space indentations of two, four and eight spaces.
+
 ## Dependencies
 
 ```bash
@@ -46,3 +50,4 @@ $ npm run docs
 
 [Tibia]: https://www.tibia.com/news/
 [Analytics Selector]: https://www.tibia.com/gameguides/?subtopic=manual&section=interface#analyticsselector
+[Discord]: https://discord.com/

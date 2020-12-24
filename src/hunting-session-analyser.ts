@@ -1,8 +1,9 @@
 
 import * as dataType from './data-type';
+import { ParseError } from './parse-error';
 
 export type HuntingSessionAnalyser = {
-  newLine: string,
+  newLine: dataType.newLine.Value,
   startedAt: string,
   startedAtValue: Date,
   endedAt: string,
@@ -36,12 +37,7 @@ export type HuntingSessionAnalyserMonsters = {
 };
 
 export type HuntingSessionAnalyserItems = {
-  [name: string]: HuntingSessionAnalyserItem
-};
-
-export type HuntingSessionAnalyserItem = {
-  stackable: boolean,
-  count: number
+  [name: string]: number
 };
 
 export type FrozenHuntingSessionAnalyser = Readonly<HuntingSessionAnalyser & {
@@ -52,12 +48,8 @@ export type FrozenHuntingSessionAnalyser = Readonly<HuntingSessionAnalyser & {
 export type FrozenHuntingSessionAnalyserMonsters =
     Readonly<HuntingSessionAnalyserMonsters>;
 
-export type FrozenHuntingSessionAnalyserItems = Readonly<{
-  [name: string]: FrozenHuntingSessionAnalyserItem
-}>;
-
-export type FrozenHuntingSessionAnalyserItem =
-    Readonly<HuntingSessionAnalyserItem>;
+export type FrozenHuntingSessionAnalyserItems =
+    Readonly<HuntingSessionAnalyserItems>;
 
 export const HUNTING_SESSION_ANALYSER_ERRORS = Object.freeze({
   invalidHeader: 'Invalid header',
@@ -99,10 +91,10 @@ export function parseHuntingSessionAnalyser(content: string):
   var matches = regex.exec(content);
 
   if (!matches) {
-    throw new Error(errors.invalidHeader);
+    throw new ParseError(errors.invalidHeader, false);
   }
 
-  analyser.newLine = matches[3];
+  analyser.newLine = matches[3] as dataType.newLine.Value;
   analyser.startedAt = matches[1];
   analyser.startedAtValue = dataType.dateTime.parse(matches[1]);
   analyser.endedAt = matches[2];
@@ -116,9 +108,9 @@ export function parseHuntingSessionAnalyser(content: string):
   const durationMinutes = Math.floor(durationValue / 60000);
 
   if (endedAtTimestamp < startedAtTimestamp) {
-    throw new Error(errors.inconsistentSession);
+    throw new ParseError(errors.inconsistentSession);
   } else if (parsedDuration / 60000 !== durationMinutes) {
-    throw new Error(errors.inconsistentDuration);
+    throw new ParseError(errors.inconsistentDuration);
   }
 
   analyser.durationValue = durationValue;
@@ -134,7 +126,7 @@ export function parseHuntingSessionAnalyser(content: string):
   analyser.balanceValue = dataType.integer.parse(matches[9]);
 
   if (analyser.balanceValue !== analyser.lootValue - analyser.suppliesValue) {
-    throw new Error(errors.inconsistentBalance);
+    throw new ParseError(errors.inconsistentBalance);
   }
 
   analyser.damage = matches[10];
@@ -147,21 +139,23 @@ export function parseHuntingSessionAnalyser(content: string):
   analyser.healingPerHourValue = dataType.integer.parse(matches[13]);
 
   const nl = dataType.newLine.pattern(analyser.newLine);
-  var sectionTitle = `Killed Monsters:${nl}`;
 
   content = content.slice(matches[0].length);
+  pattern = `Killed Monsters:${nl}`;
+  regex = new RegExp(`^${pattern}`);
+  matches = regex.exec(content);
 
-  if (!content.startsWith(sectionTitle)) {
-    throw new Error(errors.cantFindKilledMonsters);
+  if (!matches) {
+    throw new ParseError(errors.cantFindKilledMonsters);
   }
 
-  content = content.slice(sectionTitle.length);
+  content = content.slice(matches[0].length);
   pattern = `(${dataType.indentation.PATTERN})\\w`;
   regex = new RegExp(`^${pattern}`);
   matches = regex.exec(content);
 
   if (!matches) {
-    throw new Error(errors.cantDetermineIndentation);
+    throw new ParseError(errors.cantDetermineIndentation);
   }
 
   const ind = matches[1].replace('\t', '\\t');
@@ -176,22 +170,22 @@ export function parseHuntingSessionAnalyser(content: string):
     content = content.slice(matches[0].length);
   } else {
     pattern = `${ind}(\\d+)x (\\w[\\w ']*)${nl}`;
-    regex = new RegExp(pattern);
+    regex = new RegExp(`^${pattern}`);
     matches = regex.exec(content);
 
     if (!matches) {
-      throw new Error(errors.cantReadKilledMonsters);
+      throw new ParseError(errors.cantReadKilledMonsters);
     }
 
     while (matches) {
       if (killedMonsters[matches[2]]) {
-        throw new Error(errors.duplicatedKilledMonster);
+        throw new ParseError(errors.duplicatedKilledMonster);
       }
 
       killedMonsters[matches[2]] = parseInt(matches[1]);
 
       if (!killedMonsters[matches[2]]) {
-        throw new Error(errors.killedMonsterZeroCount);
+        throw new ParseError(errors.killedMonsterZeroCount);
       }
 
       content = content.slice(matches[0].length);
@@ -201,47 +195,42 @@ export function parseHuntingSessionAnalyser(content: string):
 
   analyser.killedMonsters = Object.freeze(killedMonsters);
 
-  var sectionTitle = `Looted Items:${nl}`;
+  // content = content.slice(matches[0].length);
+  pattern = `Looted items:${nl}`;
+  regex = new RegExp(`^${pattern}`);
+  matches = regex.exec(content);
 
-  content = content.slice(matches[0].length);
-
-  if (!content.startsWith(sectionTitle)) {
-    throw new Error(errors.cantReachLootedItems);
+  if (!matches) {
+    throw new ParseError(errors.cantReachLootedItems);
   }
 
   const lootedItems = {} as HuntingSessionAnalyserItems;
-  var item: HuntingSessionAnalyserItem;
 
-  content = content.slice(sectionTitle.length);
+  content = content.slice(matches[0].length);
   regex = new RegExp(`^${none}$`);
   matches = regex.exec(content);
 
   if (matches) {
     content = content.slice(matches[0].length);
   } else {
-    pattern = `${ind}(\\d+)x ((?:an? )?)(\\w[\\w ']*)${nl}`;
-    regex = new RegExp(pattern);
+    pattern = `${ind}(\\d+)x (?:an? )?(\\w[\\w ']*)`;
+    regex = new RegExp(`^${pattern}(?:${nl}|$)`);
     matches = regex.exec(content);
 
     if (!matches) {
-      throw new Error(errors.cantReadLootedItems);
+      throw new ParseError(errors.cantReadLootedItems);
     }
 
     while (matches) {
-      if (lootedItems[matches[3]]) {
-        throw new Error(errors.duplicatedLootedItem);
+      if (lootedItems[matches[2]]) {
+        throw new ParseError(errors.duplicatedLootedItem);
       }
 
-      item = {
-        count: parseInt(matches[1]),
-        stackable: !!matches[2]
-      }
+      lootedItems[matches[2]] = parseInt(matches[1]);
 
-      if (!item.count) {
-        throw new Error(errors.lootedItemZeroCount);
+      if (!lootedItems[matches[2]]) {
+        throw new ParseError(errors.lootedItemZeroCount);
       }
-
-      lootedItems[matches[3]] = Object.freeze(item);
 
       content = content.slice(matches[0].length);
       matches = regex.exec(content);
@@ -249,7 +238,8 @@ export function parseHuntingSessionAnalyser(content: string):
   }
 
   if (content) {
-    throw new Error(errors.cantReadAllLootedItems);
+    console.log(JSON.stringify(content));
+    throw new ParseError(errors.cantReadAllLootedItems);
   }
 
   analyser.lootedItems = Object.freeze(lootedItems);

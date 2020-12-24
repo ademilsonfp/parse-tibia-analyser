@@ -1,11 +1,12 @@
 
 import * as dataType from './data-type';
+import { ParseError } from './parse-error';
 
 /**
  * Resulting object of a party hunt analyser content.
  */
 export type PartyHuntAnalyser = {
-  newLine: string,
+  newLine: dataType.newLine.Value,
   startedAt: string,
   startedAtValue: Date,
   endedAt: string,
@@ -122,10 +123,10 @@ export function parsePartyHuntAnalyser(content: string):
   var matches = regex.exec(content);
 
   if (!matches) {
-    throw new Error(errors.invalidHeader);
+    throw new ParseError(errors.invalidHeader, false);
   }
 
-  analyser.newLine = matches[3];
+  analyser.newLine = matches[3] as dataType.newLine.Value;
   analyser.startedAt = matches[1];
   analyser.startedAtValue = dataType.dateTime.parse(matches[1]);
   analyser.endedAt = matches[2];
@@ -139,9 +140,9 @@ export function parsePartyHuntAnalyser(content: string):
   const durationMinutes = Math.floor(durationValue / 60000);
 
   if (endedAtTimestamp < startedAtTimestamp) {
-    throw new Error(errors.inconsistentSession);
+    throw new ParseError(errors.inconsistentSession);
   } else if (parsedDuration / 60000 !== durationMinutes) {
-    throw new Error(errors.inconsistentDuration);
+    throw new ParseError(errors.inconsistentDuration);
   }
 
   analyser.durationValue = durationValue;
@@ -154,7 +155,7 @@ export function parsePartyHuntAnalyser(content: string):
   analyser.balanceValue = dataType.integer.parse(matches[8]);
 
   if (analyser.balanceValue !== analyser.lootValue - analyser.suppliesValue) {
-    throw new Error(errors.inconsistentBalance);
+    throw new ParseError(errors.inconsistentBalance);
   }
 
   const nl = dataType.newLine.pattern(analyser.newLine);
@@ -167,7 +168,7 @@ export function parsePartyHuntAnalyser(content: string):
   matches = regex.exec(content);
 
   if (!matches) {
-    throw new Error(errors.cantDetermineIndentation);
+    throw new ParseError(errors.cantDetermineIndentation);
   }
 
   const ind = matches[1].replace('\t', '\\t');
@@ -192,7 +193,7 @@ export function parsePartyHuntAnalyser(content: string):
 
   while (matches) {
     if (members[matches[1]]) {
-      throw new Error(errors.duplicatedMember);
+      throw new ParseError(errors.duplicatedMember);
     }
 
     member = {} as PartyHuntAnalyserMember;
@@ -200,7 +201,7 @@ export function parsePartyHuntAnalyser(content: string):
 
     if (member.leader) {
       if (hasLeader) {
-        throw new Error(errors.tooManyLeaders);
+        throw new ParseError(errors.tooManyLeaders);
       }
 
       hasLeader = true;
@@ -218,7 +219,7 @@ export function parsePartyHuntAnalyser(content: string):
     member.healingValue = dataType.integer.parse(matches[7]);
 
     if (member.balanceValue !== member.lootValue - member.suppliesValue) {
-      throw new Error(errors.inconsistentMemberBalance);
+      throw new ParseError(errors.inconsistentMemberBalance);
     }
 
     members[matches[1]] = Object.freeze(member);
@@ -234,17 +235,17 @@ export function parsePartyHuntAnalyser(content: string):
   }
 
   if (!membersCount) {
-    throw new Error(errors.cantFindMembers);
+    throw new ParseError(errors.cantFindMembers);
   } else if (content) {
-    throw new Error(errors.cantReadAllMembers);
+    throw new ParseError(errors.cantReadAllMembers);
   } else if (!hasLeader) {
-    throw new Error(errors.leaderNotFound);
+    throw new ParseError(errors.leaderNotFound);
   } else if (lootSum !== analyser.lootValue) {
-    throw new Error(errors.inconsistentPartyLoot);
+    throw new ParseError(errors.inconsistentPartyLoot);
   } else if (suppliesSum !== analyser.suppliesValue) {
-    throw new Error(errors.inconsistentPartySupplies);
+    throw new ParseError(errors.inconsistentPartySupplies);
   } else if (balanceSum !== analyser.balanceValue) {
-    throw new Error(errors.inconsistentPartyBalance);
+    throw new ParseError(errors.inconsistentPartyBalance);
   }
 
   analyser.members = Object.freeze(members);
