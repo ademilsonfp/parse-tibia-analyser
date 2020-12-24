@@ -4,7 +4,6 @@ import { expect } from 'chai';
 import {
   PartyHuntAnalyserLootType,
   FrozenPartyHuntAnalyser,
-  FrozenPartyHuntAnalyserMember,
   parsePartyHuntAnalyser
 } from './party-hunt-analyser';
 
@@ -30,6 +29,8 @@ type ExpectedMember = {
 
 function checkParsedParty(parsed: FrozenPartyHuntAnalyser,
     expected: ExpectedParty) {
+
+  // Field by field tests are needed because of `Date` timestamp conversions.
 
   expect(parsed).to.be.an('object');
   expect(parsed).to.be.frozen;
@@ -75,39 +76,25 @@ function checkParsedParty(parsed: FrozenPartyHuntAnalyser,
   expect(parsed.members).to.have.all.keys(Object.keys(expected.members));
 
   var name: string;
+  var expectedMember: ExpectedMember;
 
   for (name in expected.members) {
-    checkParsedMember(parsed.members[name], expected.members[name]);
+    expectedMember = expected.members[name];
+
+    expect(parsed.members[name]).to.deep.equal({
+      leader: !!expectedMember.leader,
+      loot: dataType.integer.format(expectedMember.loot),
+      lootValue: expectedMember.loot,
+      supplies: dataType.integer.format(expectedMember.supplies),
+      suppliesValue: expectedMember.supplies,
+      balance: dataType.integer.format(expectedMember.loot - expectedMember.supplies),
+      balanceValue: expectedMember.loot - expectedMember.supplies,
+      damage: dataType.integer.format(expectedMember.damage),
+      damageValue: expectedMember.damage,
+      healing: dataType.integer.format(expectedMember.healing),
+      healingValue: expectedMember.healing
+    });
   }
-}
-
-function checkParsedMember(member: FrozenPartyHuntAnalyserMember,
-    expected: ExpectedMember) {
-
-  expect(member).to.be.an('object');
-  expect(member).to.be.frozen;
-
-  expect(member).to.have.all.keys(
-    'leader',
-    'loot',
-    'lootValue',
-    'supplies',
-    'suppliesValue',
-    'balance',
-    'balanceValue',
-    'damage',
-    'damageValue',
-    'healing',
-    'healingValue'
-  );
-
-  expect(member.leader).to.equal(!!expected.leader);
-  expect(member.loot).to.equal(dataType.integer.format(expected.loot));
-  expect(member.lootValue).to.equal(expected.loot);
-  expect(member.supplies).to.equal(dataType.integer.format(expected.supplies));
-  expect(member.suppliesValue).to.equal(expected.supplies);
-  expect(member.balance).to.equal(dataType.integer.format(expected.loot - expected.supplies));
-  expect(member.balanceValue).to.equal(expected.loot - expected.supplies);
 }
 
 describe('#parsePartyHuntAnalyser()', function () {

@@ -30,6 +30,8 @@ type ExpectedSession = {
 function checkParsedSession(parsed: FrozenHuntingSessionAnalyser,
     expected: ExpectedSession) {
 
+  // Field by field tests are needed because of `Date` timestamp conversions.
+
   expect(parsed).to.be.an('object');
   expect(parsed).to.be.frozen;
 
