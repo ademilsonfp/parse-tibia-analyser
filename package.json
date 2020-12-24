@@ -1,16 +1,14 @@
 {
-  "name": "parse-tibia",
+  "name": "parse-tibia-analyser",
   "version": "0.0.1",
-  "description": "Tools to parse content sent to clipboard in Tibia",
+  "description": "Parse analysers content from game Tibia",
   "author": "Ademilson Ferreira Pinto",
   "license": "MIT",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "keywords": [
     "tibia",
-    "parse",
-    "parser",
-    "hunt analyser",
+    "hunting session analyser",
     "party hunt analyser"
   ],
   "scripts": {

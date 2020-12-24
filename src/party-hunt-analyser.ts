@@ -85,6 +85,7 @@ export const PARTY_HUNT_ANALYSER_ERRORS = Object.freeze({
   invalidHeader: 'Invalid header',
   inconsistentSession: 'Inconsistent session',
   inconsistentDuration: 'Inconsistent duration',
+  inconsistentBalance: 'Inconsistent balance',
   cantDetermineIndentation: 'Can not determine indentation',
   duplicatedMember: 'Duplicated member',
   tooManyLeaders: 'Too many leaders',
@@ -137,6 +138,12 @@ export function parsePartyHuntAnalyser(content: string):
   const durationValue = endedAtTimestamp - startedAtTimestamp;
   const durationMinutes = Math.floor(durationValue / 60000);
 
+  if (endedAtTimestamp < startedAtTimestamp) {
+    throw new Error(errors.inconsistentSession);
+  } else if (parsedDuration / 60000 !== durationMinutes) {
+    throw new Error(errors.inconsistentDuration);
+  }
+
   analyser.durationValue = durationValue;
   analyser.lootType = matches[5].toLowerCase() as PartyHuntAnalyserLootType;
   analyser.loot = matches[6];
@@ -146,10 +153,8 @@ export function parsePartyHuntAnalyser(content: string):
   analyser.balance = matches[8];
   analyser.balanceValue = dataType.integer.parse(matches[8]);
 
-  if (endedAtTimestamp < startedAtTimestamp) {
-    throw new Error(errors.inconsistentSession);
-  } else if (parsedDuration / 60000 !== durationMinutes) {
-    throw new Error(errors.inconsistentDuration);
+  if (analyser.balanceValue !== analyser.lootValue - analyser.suppliesValue) {
+    throw new Error(errors.inconsistentBalance);
   }
 
   const nl = dataType.newLine.pattern(analyser.newLine);

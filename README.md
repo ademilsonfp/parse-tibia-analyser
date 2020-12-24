@@ -1,12 +1,13 @@
 
 ## Description
 
-Tools to parse content sent to clipboard in Tibia.
+Parse contents from [Tibia] found in _Copy to clipboard_ button, which is
+present in some dialogs of _[Analytics Selector]_.
 
-Parsers:
+Supported contents:
 
-* *hunt analyser*
-* *party hunt analyser*
+* _Hunting Session Analyser_
+* _Party Hunt Analyser_
 
 ## Dependencies
 
@@ -42,3 +43,6 @@ Generating HTML reference documentation (TypeDoc):
 ```bash
 $ npm run docs
 ```
+
+[Tibia]: https://www.tibia.com/news/
+[Analytics Selector]: https://www.tibia.com/gameguides/?subtopic=manual&section=interface#analyticsselector
