@@ -1,5 +1,7 @@
 ![CircleCI](https://img.shields.io/circleci/build/gh/ademilsonfp/parse-tibia-analyser)
 ![Codecov](https://img.shields.io/codecov/c/gh/ademilsonfp/parse-tibia-analyser)
+![npm](https://img.shields.io/npm/v/parse-tibia-analyser)
+![GitHub](https://img.shields.io/github/license/ademilsonfp/parse-tibia-analyser)
 
 ## Description
 
@@ -14,6 +16,9 @@ Supported contents:
 Apps commonly used by players to share those contents like [Discord] can change
 the standard tabular indentations to spaces, so the parsers also supports
 consistent space indentations of two, four and eight spaces.
+
+If you found this project helpful, please consider donate _Tibia Coins_ to
+character **Tulke Borian**.
 
 ## Index
 - [Description](#description)
