@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   node: circleci/node@4.1.0
+  codecov: codecov/codecov@1.1.3
 
 jobs:
   test:
@@ -13,8 +14,10 @@ jobs:
       - node/install-packages:
           pkg-manager: yarn
       - run:
-          command: yarn run test
-          name: 'Run yarn tests'
+          command: yarn run coverage
+          name: 'Run tests and coverage report'
+      - codecov/upload:
+          file: coverage/lcov.info
 
 workflows:
   parse-tibia-analyser:

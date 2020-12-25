@@ -6,7 +6,7 @@
     "src/**/*.spec.ts"
   ],
   "reporter": [
-    "html",
-    "text"
+    "text",
+    "lcov"
   ]
 }
