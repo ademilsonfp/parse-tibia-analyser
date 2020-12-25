@@ -11,6 +11,10 @@
     "hunting session analyser",
     "party hunt analyser"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ademilsonfp/parse-tibia-analyser.git"
+  },
   "scripts": {
     "dev": "mocha -w src",
     "docs": "typedoc --options .typedoc.json",
