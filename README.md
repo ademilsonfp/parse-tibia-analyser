@@ -1,3 +1,6 @@
+![CircleCI](https://img.shields.io/circleci/build/gh/ademilsonfp/parse-tibia-analyser)
+![Codecov](https://img.shields.io/codecov/c/gh/ademilsonfp/parse-tibia-analyser)
+
 ## Description
 
 Parse contents from [Tibia] found in _Copy to clipboard_ button, which is
