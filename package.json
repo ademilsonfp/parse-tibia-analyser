@@ -1,6 +1,6 @@
 {
   "name": "parse-tibia-analyser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Parse analysers content from game Tibia",
   "author": "Ademilson Ferreira Pinto",
   "license": "MIT",
