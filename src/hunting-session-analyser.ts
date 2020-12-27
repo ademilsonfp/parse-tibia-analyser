@@ -37,8 +37,13 @@ export type HuntingSessionAnalyserMonsters = {
 };
 
 export type HuntingSessionAnalyserItems = {
-  [name: string]: number
+  [name: string]: HuntingSessionAnalyserItem
 };
+
+export type HuntingSessionAnalyserItem = {
+  indefiniteArticle: 'an' | 'a' | null,
+  count: number
+}
 
 export type FrozenHuntingSessionAnalyser = Readonly<HuntingSessionAnalyser & {
   killedMonsters: FrozenHuntingSessionAnalyserMonsters,
@@ -195,7 +200,6 @@ export function parseHuntingSessionAnalyser(content: string):
 
   analyser.killedMonsters = Object.freeze(killedMonsters);
 
-  // content = content.slice(matches[0].length);
   pattern = `Looted items:${nl}`;
   regex = new RegExp(`^${pattern}`);
   matches = regex.exec(content);
@@ -213,7 +217,7 @@ export function parseHuntingSessionAnalyser(content: string):
   if (matches) {
     content = content.slice(matches[0].length);
   } else {
-    pattern = `${ind}(\\d+)x (?:an? )?(\\w[\\w ']*)`;
+    pattern = `${ind}(\\d+)x ((?:an? )?)(\\w[\\w ']*)`;
     regex = new RegExp(`^${pattern}(?:${nl}|$)`);
     matches = regex.exec(content);
 
@@ -222,13 +226,16 @@ export function parseHuntingSessionAnalyser(content: string):
     }
 
     while (matches) {
-      if (lootedItems[matches[2]]) {
+      if (lootedItems[matches[3]]) {
         throw new ParseError(errors.duplicatedLootedItem);
       }
 
-      lootedItems[matches[2]] = parseInt(matches[1]);
+      lootedItems[matches[3]] = {
+        count: parseInt(matches[1]),
+        indefiniteArticle: (matches[2].trim() || null) as 'an' | 'a' | null
+      }
 
-      if (!lootedItems[matches[2]]) {
+      if (!lootedItems[matches[3]].count) {
         throw new ParseError(errors.lootedItemZeroCount);
       }
 

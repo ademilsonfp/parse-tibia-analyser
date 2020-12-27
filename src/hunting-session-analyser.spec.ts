@@ -1,5 +1,6 @@
 
 import { expect } from 'chai';
+import { writeFileSync } from 'fs';
 
 import {
   HuntingSessionAnalyserMonsters,
@@ -107,7 +108,7 @@ function checkParsedSession(parsed: FrozenHuntingSessionAnalyser,
   expect(parsed.lootedItems).to.have.all.keys(Object.keys(expected.lootedItems));
 
   for (name in expected.lootedItems) {
-    expect(parsed.lootedItems[name]).to.equal(expected.lootedItems[name]);
+    expect(parsed.lootedItems[name]).to.deep.equal(expected.lootedItems[name]);
   }
 }
 
@@ -183,22 +184,69 @@ describe('#parseHuntingSessionAnalyser()', function () {
       },
 
       lootedItems: {
-        'great health potion': 14,
-        'crystal ring': 1,
-        'gold coin': 11201,
-        'small amethyst': 20,
-        'platinum coin': 9,
-        'terra rod': 24,
-        'orichalcum pearl': 2,
-        'red piece of cloth': 5,
-        'soul orb': 21,
-        'demonic essence': 27,
-        'concentrated demonic blood': 63,
-        'assassin dagger': 2,
-        'noble axe': 2,
-        'jalapeno pepper': 83,
-        'slightly rusted legs': 16
+        'great health potion': {
+          count: 14,
+          indefiniteArticle: 'a'
+        },
+        'crystal ring': {
+          count: 1,
+          indefiniteArticle: 'a'
+        },
+        'gold coin': {
+          count: 11201,
+          indefiniteArticle: 'a'
+        },
+        'small amethyst': {
+          count: 20,
+          indefiniteArticle: 'a'
+        },
+        'platinum coin': {
+          count: 9,
+          indefiniteArticle: 'a'
+        },
+        'terra rod': {
+          count: 24,
+          indefiniteArticle: 'a'
+        },
+        'orichalcum pearl': {
+          count: 2,
+          indefiniteArticle: 'an'
+        },
+        'red piece of cloth': {
+          count: 5,
+          indefiniteArticle: 'a'
+        },
+        'soul orb': {
+          count: 21,
+          indefiniteArticle: 'a'
+        },
+        'demonic essence': {
+          count: 27,
+          indefiniteArticle: null
+        },
+        'concentrated demonic blood': {
+          count: 63,
+          indefiniteArticle: null
+        },
+        'assassin dagger': {
+          count: 2,
+          indefiniteArticle: 'an'
+        },
+        'noble axe': {
+          count: 2,
+          indefiniteArticle: 'a'
+        },
+        'jalapeno pepper': {
+          count: 83,
+          indefiniteArticle: 'a'
+        },
+        'slightly rusted legs': {
+          count: 16,
+          indefiniteArticle: null
+        }
       }
     });
+
+    writeFileSync('/tmp/hsa.json', JSON.stringify(parsed, null, 2));
   });
 });
