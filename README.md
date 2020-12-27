@@ -17,7 +17,9 @@ Apps commonly used by players to share those contents like [Discord] can change
 the standard tabular indentations to spaces, so the parsers also supports
 consistent space indentations of two, four and eight spaces.
 
-If you found this project helpful, please consider donate _Tibia Coins_ to
+**[Take a look at the demo-app](#demo-app-clipboard-test)**.
+
+If you found this project helpful, you can help me donating _Tibia Coins_ to my
 character **Tulke Borian**.
 
 ## Index
@@ -26,6 +28,7 @@ character **Tulke Borian**.
 - [Examples](#examples)
   - [Parsing _Hunting Session Analyser_](#parsing-hunting-session-analyser)
   - [Parsing _Party Hunt Analyser_](#parsing-party-hunt-analyser)
+- [Demo App (Clipboard Test)](#demo-app-clipboard-test)
 - [Development](#development)
   - [Dependencies](#dependencies)
   - [Tests](#tests)
@@ -260,6 +263,17 @@ The code above will output:
 }
 ```
 
+## Demo App (Clipboard Test)
+
+<div style="text-align: center; margin: 20px"><img src="demo-app/screenshot.png" /></div>
+
+The demo app tracks your clipboard for copied analysers contents and allow you
+to export individual tracks or the entire list as a JSON bundle.
+
+Contents are cleared when app is closed.
+
+You can [download demo-app] in releases page.
+
 ## Development
 
 ### Dependencies
@@ -308,4 +322,5 @@ Copyright (c) 2020, Ademilson Ferreira Pinto
 [Tibia]: https://www.tibia.com/news/
 [Analytics Selector]: https://www.tibia.com/gameguides/?subtopic=manual&section=interface#analyticsselector
 [Discord]: https://discord.com/
+[download demo-app]: https://github.com/ademilsonfp/parse-tibia-analyser/releases/tag/v1.0.3
 [MIT]: https://opensource.org/licenses/MIT

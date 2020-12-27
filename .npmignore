@@ -4,6 +4,7 @@
 coverage
 docs
 src
+demo-app
 tsconfig.*
 tsconfig-*
 *.tgz
