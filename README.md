@@ -210,7 +210,7 @@ const result = parsePartyHuntAnalyser([
   '\tBalance: 9,784',
   '\tDamage: 6,762',
   '\tHealing: 113,443'
-]);
+].join('\n'));
 
 console.log(JSON.stringify(result, null, 2));
 ```

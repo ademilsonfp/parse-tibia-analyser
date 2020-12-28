@@ -1,6 +1,5 @@
 
 import { expect } from 'chai';
-import { writeFileSync } from 'fs';
 
 import {
   HuntingSessionAnalyserMonsters,
@@ -246,7 +245,5 @@ describe('#parseHuntingSessionAnalyser()', function () {
         }
       }
     });
-
-    writeFileSync('/tmp/hsa.json', JSON.stringify(parsed, null, 2));
   });
 });
