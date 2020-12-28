@@ -1,5 +1,4 @@
 {
-  "mode": "library",
-  "entryPoint": "./src/index",
-  "out": "./docs"
+  "out": "./docs",
+  "tsconfig": "./tsconfig-build.json"
 }
