@@ -1,5 +1,4 @@
-import { BaseError } from "make-error";
 
-export class ParseError extends BaseError {
+export class ParseError extends Error {
   name = 'ParseError';
 }
