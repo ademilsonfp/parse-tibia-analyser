@@ -65,14 +65,14 @@ const parseHuntingSessionHeader = function <
 
   const pattern = [
     `^XP Gain: (${patterns.integer})`,
-    `XP/h: (${patterns.integer})`,
+    `XP\/h: (${patterns.integer})`,
     `Loot: (${patterns.integer})`,
     `Supplies: (${patterns.integer})`,
     `Balance: (${patterns.integer})`,
     `Damage: (${patterns.integer})`,
-    `Damage/h: (${patterns.integer})`,
+    `Damage\/h: (${patterns.integer})`,
     `Healing: (${patterns.integer})`,
-    `Healing/h: (${patterns.integer})`,
+    `Healing\/h: (${patterns.integer})`,
     ''
   ].join(lineBreakPattern);
 
