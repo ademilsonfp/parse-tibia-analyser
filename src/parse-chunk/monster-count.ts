@@ -59,7 +59,7 @@ const parseMonsterCount = function <
 
   const pattern = [
     `^(${patterns.count}) (${patterns.monsterName})`,
-    `(${indentationPattern}?)`
+    `(${indentationPattern})?`
   ].join(lineBreakPattern);
 
   const matched = new RegExp(pattern).exec(content);
